@@ -1,89 +1,53 @@
-from flask import Flask, request, render_template
-from datetime import datetime
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-import os
-app = Flask(__name__)
+from datetime import datetime, date
 
-db_uri = "sqlite:///test.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///postdata.db'
 db = SQLAlchemy(app)
 
-class Textboard(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    post_date = db.Column(db.DateTime, nullable=False,
-                                default=datetime.utcnow)
-    name = db.Column(db.String(80))
-    article = db.Column(db.Text())
-    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), nullable=False)
-
-    def __init__(self, post_date, name, article, thread_id):
-        self.post_date = post_date
-        self.name = name
-        self.article = article
-        self.thread_id = thread_id
-
-
-class Thread(db.Model):
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    thread_name = db.Column(db.String(80), unique=True)
-    articles = db.relationship('Textboard', backref='thread', lazy=True)
+    user = db.Column(db.String(20), nullable=False)
+    title = db.Column(db.String(30), nullable=False)
+    detail = db.Column(db.Text, nullable=False)
+    post_date = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, thread_name, articles=[]):
-        self.thread_name = thread_name
-        self.articles = articles
-
-
-@app.route("/")
-def main():
-    threads = Thread.query.all()
-    # print("\n---------------------------------------------")
-    # print(text)
-    # print(type(text))
-    # print("---------------------------------------------\n")
-    return render_template("index.html", threads=threads)
-
-@app.route("/thread", methods=["POST"])
-def thread():
-    thread_get = request.form["thread"]
-    threads = Thread.query.all()
-    thread_list = []
-    threads = Thread.query.all()
-    for th in threads:
-        thread_list.append(th.thread_name)
-        #print("----" + th.threadname + "----")
-    if thread_get in thread_list:
-        thread = Thread.query.filter_by(thread_name=thread_get).first()
-        articles = Textboard.query.filter_by(thread_id=thread.id).all()
-        return render_template("thread.html",
-                                articles=articles,
-                                thread=thread_get)
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        posts = Post.query.all()
+        return render_template('index.html', posts=posts)
     else:
-        thread_new = Thread(thread_get)
-        db.session.add(thread_new)
+        user = request.form.get('user')
+        title = request.form.get('title')
+        detail = request.form.get('detail')
+        post_date = request.form.get('post_date')
+
+        post_date = datetime.strptime(post_date, '%Y-%m-%d')
+        new_post = Post(user=user, title=title, detail=detail, post_date=post_date)
+
+        db.session.add(new_post)
         db.session.commit()
-        articles = Textboard.query.filter_by(thread_id=thread_new.id).all()
-        return render_template("thread.html",
-                                articles=articles,
-                                thread=thread_get)
+        return redirect('/')
 
-@app.route("/result", methods=["POST"])
-def result():
-    date = datetime.now()
-    article = request.form["article"]
-    name = request.form["name"]
-    thread = request.form["thread"]
-    #print(article)
-    #print(name)
-    #print("------------------------------------------------------------")
-    #print(thread)
-    #print("------------------------------------------------------------")
-    thread = Thread.query.filter_by(thread_name=thread).first()
-    #print(thread)
-    #print("------------------------------------------------------------")
-    admin = Textboard(post_date=date, name=name, article=article, thread_id=thread.id)
-    db.session.add(admin)
+
+@app.route('/create')
+def create():
+    return render_template('create.html')
+
+@app.route('/detail/<int:id>')
+def detail(id):
+    post = Post.query.get(id)
+    return render_template('detail.html', post=post)
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    post = Post.query.get(id)
+
+    db.session.delete(post)
     db.session.commit()
-    return render_template("write_result.html", article=article, name=name, now=date)
+    return redirect('/')
 
-if __name__ == "__main__":
-    app.run(debug=False)
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,22 +1,21 @@
-{% block content %}
-    <h1>掲示板</h1>
+{% extends 'base.html' %}
 
-    <form action="/thread" method="post">
-        <label for="thread">新しいスレッドを立てる</label>
-        <input type="text" name="thread">
-        <!-- <textarea name="article" rows="6" cols="100"></textarea>
-        <p></p>
-        <label for="name">名前</label>
-        <input type="text" name="name"> -->
-        <button type="submit">作る</button>
-    </form>
+{% block body %}
+<h1>Index Page</h1>
 
-    <h2>スレッド一覧</h2>
-    {% for thread in threads: %}
-        <form action="/thread" method="post">
-		  <input type="hidden" name="thread" value="{{ thread.thread_name }}">
-            <button type="submit">{{ thread.thread_name }}</button>
-        </form>
-    {% endfor %}
+<a href="/create" class="btn-lg btn-info" role="button">投稿する</a>
 
+<div class="container">
+  {% for post in posts %}
+  <div class="card">
+      <h5 class="card-header">日付：{{ post.post_date.date() }}</h5>
+      <div class="card-body">
+        <h5 class="card-title">タイトル：{{ post.title }}</h5>
+        <p class="card-text">投稿者：{{ post.user }}</p>
+        <a role="button" href="/detail/{{ post.id }}" class="btn-lg btn-secondary">詳細</a>
+        <a role="button" href="/delete/{{ post.id }}" class="btn-lg btn-danger">削除</a>
+      </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
