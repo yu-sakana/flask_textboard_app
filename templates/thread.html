@@ -16,19 +16,21 @@
 
     <table class="table">
     <thead class="thead-dark">
-        <tr>
+      <tr>
+		<th>ID</th>
         <th>日付</th>
         <th>名前</th>
         <th>投稿</th>
-        </tr>
+	  </tr>
     </thead>
     <tbody>
         {% for f in articles: %}
-            <tr>
-                <th scope="row"><font size="1">{{ f.now_date.strftime('%Y/%m/%d %H:%M:%S') }}</font></th>
-                <td>{{ f.name }}</td>
-                <td>{{ f.article }}</td>
-            </tr>
+        <tr>
+		  <td>{{f.id}}</td>
+          <th scope="row"><font size="1">{{ f.now_date.strftime('%Y/%m/%d %H:%M:%S') }}</font></th>
+          <td>{{ f.name }}</td>
+          <td>{{ f.article }}</td>
+		</tr>
         {% endfor %}
     </tbody>
     </table>
