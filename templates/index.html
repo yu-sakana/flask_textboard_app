@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>掲示板</h1>
+
+    <form action="/create_thread" method="post">
+        <label for="thread">make_thread</label>
+        <input type="text" name="thread">
+		<button type="submit">Post</button>
+    </form>
+
+    <h2>スレッド一覧</h2>
+
+	<table class="table" border='1'>
+	  <tr>
+		<th>スレッドID</th>
+		<th>スレッド名</th>
+		<th>作成日時</th>
+	  </tr>
+	  {% for thread in threads: %}
+	  <tr>
+		<td>{{thread.id}}</td>
+		<td><a href="{{ url_for('thread_detail_show', title=thread.thread_name) }}">{{ thread.thread_name }}</a></td>
+		<td>{{thread.post_date.strftime('%Y/%m/%d %H:%M:%S')}}</td>
+	  </tr>
+      {% endfor %}
+	</table>
+
+{% endblock %}
