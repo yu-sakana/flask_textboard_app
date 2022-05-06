@@ -12,11 +12,13 @@
 
 	<table class="table" border='1'>
 	  <tr>
+		<th>スレッドID</th>
 		<th>スレッド名</th>
 		<th>作成日時</th>
 	  </tr>
 	  {% for thread in threads: %}
 	  <tr>
+		<td>{{thread.id}}</td>
 		<td><a href="{{ url_for('thread_detail_show', title=thread.thread_name) }}">{{ thread.thread_name }}</a></td>
 		<td>{{thread.post_date.strftime('%Y/%m/%d %H:%M:%S')}}</td>
 	  </tr>
