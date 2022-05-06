@@ -9,15 +9,18 @@
     </form>
 
     <h2>スレッド一覧</h2>
-    {% for thread in threads: %}
+
 	<table class="table" border='1'>
 	  <tr>
 		<th>スレッド名</th>
 		<th>作成日時</th>
 	  </tr>
+	  {% for thread in threads: %}
 	  <tr>
 		<td><a href="{{ url_for('thread_detail_show', title=thread.thread_name) }}">{{ thread.thread_name }}</a></td>
-		<td>{{thread.post_date.strftime('%Y/%m/%d %H:%M:%S')}}
-    {% endfor %}
+		<td>{{thread.post_date.strftime('%Y/%m/%d %H:%M:%S')}}</td>
+	  </tr>
+      {% endfor %}
+	</table>
 
 {% endblock %}
