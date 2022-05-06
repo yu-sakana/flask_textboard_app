@@ -1,21 +1,23 @@
-{% extends 'base.html' %}
+{% extends "layout.html" %}
+{% block content %}
+    <h1>掲示板</h1>
 
-{% block body %}
-<h1>Index Page</h1>
+    <form action="/create_thread" method="post">
+        <label for="thread">make_thread</label>
+        <input type="text" name="thread">
+		<button type="submit">Post</button>
+    </form>
 
-<a href="/create" class="btn-lg btn-info" role="button">投稿する</a>
+    <h2>スレッド一覧</h2>
+    {% for thread in threads: %}
+	<table class="table" border='1'>
+	  <tr>
+		<th>スレッド名</th>
+		<th>作成日時</th>
+	  </tr>
+	  <tr>
+		<td><a href="{{ url_for('thread_detail_show', title=thread.thread_name) }}">{{ thread.thread_name }}</a></td>
+		<td>{{thread.post_date.strftime('%Y/%m/%d %H:%M:%S')}}
+    {% endfor %}
 
-<div class="container">
-  {% for post in posts %}
-  <div class="card">
-      <h5 class="card-header">日付：{{ post.post_date.date() }}</h5>
-      <div class="card-body">
-        <h5 class="card-title">タイトル：{{ post.title }}</h5>
-        <p class="card-text">投稿者：{{ post.user }}</p>
-        <a role="button" href="/detail/{{ post.id }}" class="btn-lg btn-secondary">詳細</a>
-        <a role="button" href="/delete/{{ post.id }}" class="btn-lg btn-danger">削除</a>
-      </div>
-  </div>
-  {% endfor %}
-</div>
 {% endblock %}
