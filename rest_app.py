@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 app = Flask(__name__)
 
-db_uri = "sqlite:///test.db"
+db_uri = "sqlite:///test_rest.db"
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["DEBUG"] = True
 app.config['JSON_AS_ASCII'] = False
@@ -64,8 +64,8 @@ def create_thread():
         db.session.commit()
     return redirect(url_for('thread_detail_show', title=thread_title))
 
-@app.route("/api/get_info", methods=["GET"])
-def get_infomation():
+@app.route("/api/get_thread", methods=["GET"])
+def get_thread():
     def get_all_thread():
         thread_all_get = Thread.query.filter(Thread.id != None).all()
         thread_list = []
@@ -74,6 +74,10 @@ def get_infomation():
             thread_list.append(thread_detail)
         return jsonify(thread_list)
 
+    return get_all_thread()
+
+@app.route("/api/get_article/<int:thread_id>", methods=["GET"])
+def get_article(thread_id):
     def get_articles(api_thread_id):
         data = {api_thread_id: []}
         thread_api_get = Thread.query.filter_by(id=api_thread_id)
@@ -83,14 +87,10 @@ def get_infomation():
             data[api_thread_id].append(article_detail)
         return jsonify(data)
     
-    thread_id = request.args.get("thread_id")
-    if thread_id is None:
-        return get_all_thread()
-    else:
-        return get_articles(thread_id)
+    return get_articles(thread_id)
 
-@app.route("/api", methods=["POST"])
-def post_method():
+@app.route("/api/make_thread/<thread_title>", methods=["POST"])
+def post_title(thread_title):
     def make_thread(thread_title):
         thread_list = []
         threads = Thread.query.all()
@@ -101,22 +101,21 @@ def post_method():
             db.session.commit()
         return jsonify({'title': thread_title})
 
-    def post_article(post_name,post_article,post_thread_id):
+    return make_thread(thread_title)
+
+@app.route("/api/post_article/<int:thread_id>", methods=["POST"])
+def post_article(thread_id):
+    def post(post_name,post_article,post_thread_id):
         if Thread.query.filter_by(id=post_thread_id) is not None:
             data = Article(name=post_name,article=post_article, thread_id=post_thread_id)
             db.session.add(data)
             db.session.commit()
         return jsonify({"name": post_name, "article": post_article, "Post_thread_id": post_thread_id})
 
-    thread_title = request.args.get("thread_title")
-    article = request.args.get("article")
+    article = request.args.get("article", type=str)
     name = request.args.get("name", default='名無しさん', type=str)
-    thread_id = request.args.get("thread_id")
 
-    if thread_title is not None:
-        return make_thread(thread_title)
-    else:
-        return post_article(name,article,thread_id)
+    return post(name,article,thread_id)
     
 if __name__ == "__main__":
     app.run()
