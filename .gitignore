@@ -1,4 +1,4 @@
-__pycache__
+__pycache_/_
 *.db
 not_use/*
 post_test.py
