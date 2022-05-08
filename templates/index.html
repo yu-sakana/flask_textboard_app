@@ -1,12 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>掲示板</h1>
-
-    <form action="/create_thread" method="post">
-        <label for="thread">make_thread</label>
-        <input type="text" name="thread">
-		<button type="submit">Post</button>
-    </form>
+    <h1 class='space_etc'>Welcome!</h1>
 
     <h2>スレッド一覧</h2>
 
@@ -24,5 +18,14 @@
 	  </tr>
       {% endfor %}
 	</table>
+
+	<p class='new_post'></p>
+	<h2 >スレッドを作成する</h2>
+
+	<form action="/create_thread" method="post">
+        <label for="thread">スレッド名</label>
+        <input type="text" name="thread">
+		<button type="submit">スレッド作成</button>
+    </form>
 
 {% endblock %}

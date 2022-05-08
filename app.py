@@ -62,7 +62,7 @@ def create_thread():
         thread_new = Thread(thread_name=thread_title)
         db.session.add(thread_new)
         db.session.commit()
-    return redirect(url_for('thread_detail_show', title=thread_title))
+    return redirect(url_for('index'))
 
 @app.route("/api/get_info", methods=["GET"])
 def get_infomation():
