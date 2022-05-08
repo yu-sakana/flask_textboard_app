@@ -99,7 +99,7 @@ def post_method():
             new_thread = Thread(thread_name=thread_title)
             db.session.add(new_thread)
             db.session.commit()
-            return jsonify({'title': thread_title})
+        return jsonify({'title': thread_title})
 
     def post_article(post_name,post_article,post_thread_id):
         if Thread.query.filter_by(id=post_thread_id) is not None:

@@ -99,7 +99,7 @@ def post_title(thread_title):
             new_thread = Thread(thread_name=thread_title)
             db.session.add(new_thread)
             db.session.commit()
-            return jsonify({'title': thread_title})
+        return jsonify({'title': thread_title})
 
     return make_thread(thread_title)
 
