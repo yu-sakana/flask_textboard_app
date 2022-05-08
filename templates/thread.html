@@ -1,18 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-<h1>掲示板</h1>
+<h1 class='space_etc'>掲示板</h1>
 
-<form action="/result" method="post">
-    <input type="hidden" name="thread" value="{{ thread }}">
-    <label for="article">投稿</label>
-    <textarea name="article" rows="6" cols="100"></textarea>
-    <p></p>
-    <label for="name">名前</label>
-    <input type="text" name="name">
-    <button type="submit">送信する</button>
-</form>
-
-<h2>投稿一覧 {{ thread }}</h2>
+<h2>投稿一覧 ：{{ thread }}</h2>
 
     <table class="table">
     <thead class="thead-dark">
@@ -35,5 +25,22 @@
     </tbody>
     </table>
 
-    <a href="{{ url_for('index') }}">戻る</a>
+    <a href="{{ url_for('index') }}">スレッド一覧に戻る</a>
+
+	<p class='new_post'></p>
+
+	<h2>投稿する</h2>
+
+
+	<form action="/result" method="post">
+	  <label for="name">名前</label>
+      <input type="text" name="name">
+	  <p></p>
+	  <input type="hidden" name="thread" value="{{ thread }}">
+      <label for="article">投稿</label>
+      <textarea name="article" rows="6" cols="100"></textarea>
+      <p></p>
+      <button type="submit">送信する</button>
+	</form>
+
 {% endblock %}

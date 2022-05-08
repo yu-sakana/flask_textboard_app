@@ -2,3 +2,4 @@
 *.db
 not_use/*
 post_test.py
+static/
