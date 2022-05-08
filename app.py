@@ -6,7 +6,6 @@ import os
 app = Flask(__name__)
 
 db_uri = "sqlite:///test.db"
-# db_uri = os.environ.get('DATABASE_URL') #or "postgresql://localhost/flasknote"
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["DEBUG"] = True
 app.config['JSON_AS_ASCII'] = False
@@ -63,7 +62,6 @@ def create_thread():
         thread_new = Thread(thread_name=thread_title)
         db.session.add(thread_new)
         db.session.commit()
-#    thread_id = Thread.query.filter_by(thread_name=thread_get).first()
     return redirect(url_for('thread_detail_show', title=thread_title))
 
 @app.route("/api/get_info", methods=["GET"])

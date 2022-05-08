@@ -6,7 +6,6 @@ import os
 app = Flask(__name__)
 
 db_uri = "sqlite:///test_rest.db"
-# db_uri = os.environ.get('DATABASE_URL') #or "postgresql://localhost/flasknote"
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["DEBUG"] = True
 app.config['JSON_AS_ASCII'] = False
@@ -63,7 +62,6 @@ def create_thread():
         thread_new = Thread(thread_name=thread_title)
         db.session.add(thread_new)
         db.session.commit()
-#    thread_id = Thread.query.filter_by(thread_name=thread_get).first()
     return redirect(url_for('thread_detail_show', title=thread_title))
 
 @app.route("/api/get_thread", methods=["GET"])
@@ -103,7 +101,6 @@ def post_title(thread_title):
             db.session.commit()
             return jsonify({'title': thread_title})
 
-    #thread_title = request.args.get("thread_title")
     return make_thread(thread_title)
 
 @app.route("/api/post_article/<int:thread_id>", methods=["POST"])
@@ -115,7 +112,6 @@ def post_article(thread_id):
             db.session.commit()
         return jsonify({"name": post_name, "article": post_article, "Post_thread_id": post_thread_id})
 
-    #thread_id = request.args.get("thread_id")
     article = request.args.get("article", type=str)
     name = request.args.get("name", default='名無しさん', type=str)
 
