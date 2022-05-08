@@ -78,8 +78,8 @@ def get_thread():
 
     return get_all_thread()
 
-@app.route("/api/get_article", methods=["GET"])
-def get_article():
+@app.route("/api/get_article/<int:thread_id>", methods=["GET"])
+def get_article(thread_id):
     def get_articles(api_thread_id):
         data = {api_thread_id: []}
         thread_api_get = Thread.query.filter_by(id=api_thread_id)
@@ -89,11 +89,10 @@ def get_article():
             data[api_thread_id].append(article_detail)
         return jsonify(data)
     
-    thread_id = request.args.get("thread_id")
     return get_articles(thread_id)
 
-@app.route("/api/make_title", methods=["POST"])
-def post_title():
+@app.route("/api/make_thread/<thread_title>", methods=["POST"])
+def post_title(thread_title):
     def make_thread(thread_title):
         thread_list = []
         threads = Thread.query.all()
@@ -104,11 +103,11 @@ def post_title():
             db.session.commit()
             return jsonify({'title': thread_title})
 
-    thread_title = request.args.get("thread_title")
+    #thread_title = request.args.get("thread_title")
     return make_thread(thread_title)
 
-@app.route("/api/post_article", methods=["POST"])
-def post_article():
+@app.route("/api/post_article/<int:thread_id>", methods=["POST"])
+def post_article(thread_id):
     def post(post_name,post_article,post_thread_id):
         if Thread.query.filter_by(id=post_thread_id) is not None:
             data = Article(name=post_name,article=post_article, thread_id=post_thread_id)
@@ -116,9 +115,9 @@ def post_article():
             db.session.commit()
         return jsonify({"name": post_name, "article": post_article, "Post_thread_id": post_thread_id})
 
-    article = request.args.get("article")
+    #thread_id = request.args.get("thread_id")
+    article = request.args.get("article", type=str)
     name = request.args.get("name", default='名無しさん', type=str)
-    thread_id = request.args.get("thread_id")
 
     return post(name,article,thread_id)
     
